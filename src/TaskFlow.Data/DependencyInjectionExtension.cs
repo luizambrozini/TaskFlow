@@ -12,6 +12,7 @@ namespace TaskFlow.Data
         public static void AddData(this IServiceCollection services, IConfiguration configuration)
         {
             AddDbContext(services, configuration);
+            AddRepositories(services);
         }
 
         private static void AddRepositories(IServiceCollection services)

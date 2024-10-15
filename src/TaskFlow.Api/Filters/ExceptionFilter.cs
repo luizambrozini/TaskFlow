@@ -5,7 +5,7 @@ using TaskFlow.Comunication.Responses;
 
 namespace TaskFlow.Api.Filters
 {
-    public class ExceptionFilter
+    public class ExceptionFilter : IExceptionFilter
     {
         public void OnException(ExceptionContext context)
         {
@@ -42,5 +42,4 @@ namespace TaskFlow.Api.Filters
             context.Result = new ObjectResult(response);
         }
     }
-}
 }
