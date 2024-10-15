@@ -1,6 +1,6 @@
 ﻿namespace TaskFlow.Comunication.Enums
 {
-    public enum TaskPriority
+    public enum MyTaskPriority
     {
         HIGH = 0,
         MEDIUM = 1,

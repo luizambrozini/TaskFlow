@@ -1,6 +1,6 @@
 ﻿namespace TaskFlow.Comunication.Enums
 {
-    public enum TaskStatus
+    public enum MyTaskStatus
     {
         COMPLETED = 0,
         IN_PROGRESS = 1,

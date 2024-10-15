@@ -6,8 +6,8 @@ namespace TaskFlow.Comunication.Requests
     {
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public TaskPriority TaskPriority { get; set; }
+        public MyTaskPriority TaskPriority { get; set; }
         public DateTime TimeToEnd { get; set; }
-        public TaskFlow.Comunication.Enums.TaskStatus Status { get; set; }
+        public MyTaskStatus Status { get; set; }
     }
 }

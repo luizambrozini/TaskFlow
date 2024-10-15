@@ -34,7 +34,7 @@ namespace TaskFlow.Application.UseCases.Tasks.CreateTask
             _taskRepository.Add(myTask);
             _unitOfwork.Commit();
 
-            return new ResponseCreateTaskJson();
+            return new ResponseCreateTaskJson { Id = myTask.Id };
         }
 
         private void Validate(RequestCreateTaskJson request)

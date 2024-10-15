@@ -33,6 +33,12 @@ namespace TaskFlow.Api.Filters
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 context.Result = new NotFoundObjectResult(response);
             }
+            else if (context.Exception is ErrorOnDeleteException exDelete)
+            {
+                var response = new ResponseErrorJson(exDelete.Error);
+                context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Result = new ObjectResult(response);
+            }
             else
             {
                 var response = new ResponseErrorJson(context.Exception.Message);

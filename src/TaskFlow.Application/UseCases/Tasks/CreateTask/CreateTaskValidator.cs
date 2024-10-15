@@ -9,7 +9,7 @@ namespace TaskFlow.Application.UseCases.Tasks.CreateTask
         {
             RuleFor(t => t.Name).NotEmpty().WithMessage("The name of task is required.");
             RuleFor(t => t.TaskPriority).IsInEnum().WithMessage("The priority is invalid.");
-            RuleFor(t => t.TimeToEnd).LessThanOrEqualTo(DateTime.UtcNow).WithMessage("The time to end cannot be in the past.");
+            RuleFor(t => t.TimeToEnd).GreaterThanOrEqualTo(DateTime.UtcNow).WithMessage("The time to end cannot be in the past.");
             RuleFor(t => t.Status).IsInEnum().WithMessage("The status is invalid.");
         }
     }
