@@ -4,7 +4,7 @@ using TaskFlow.Data.Enums;
 
 namespace TaskFlow.Data.Entities
 {
-    [Table("Tasks")]
+    [Table("MyTasks")]
     public class MyTask
     {
         [Key]

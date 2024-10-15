@@ -7,7 +7,7 @@ namespace TaskFlow.Data.Contexts
     {
         public TaskFlowDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<MyTask> Tasks { get; set; }
+        public DbSet<MyTask> MyTasks { get; set; }
 
     }
 }

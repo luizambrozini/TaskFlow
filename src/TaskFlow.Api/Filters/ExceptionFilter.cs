@@ -27,6 +27,12 @@ namespace TaskFlow.Api.Filters
                 context.HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 context.Result = new BadRequestObjectResult(response);
             }
+            else if (context.Exception is ErrorOnNotFoundException exNotFound)
+            {
+                var response = new ResponseErrorJson(exNotFound.Error);
+                context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                context.Result = new NotFoundObjectResult(response);
+            }
             else
             {
                 var response = new ResponseErrorJson(context.Exception.Message);

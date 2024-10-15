@@ -15,29 +15,29 @@ namespace TaskFlow.Data.Repositories.Tasks
 
         public void Add(MyTask task)
         {
-            _taskFlowDbContext.Tasks.Add(task);
+            _taskFlowDbContext.MyTasks.Add(task);
         }
 
-        public bool Delete(int id)
+        public bool Delete(long id)
         {
-            var task = _taskFlowDbContext.Tasks.Find(id);
+            var task = _taskFlowDbContext.MyTasks.Find(id);
             if (task == null)
             {
                 return false;
             }
 
-            _taskFlowDbContext.Tasks.Remove(task);
+            _taskFlowDbContext.MyTasks.Remove(task);
             return true;
         }
 
-        public MyTask Get(int id)
+        public MyTask Get(long id)
         {
-            return _taskFlowDbContext.Tasks.Find(id) ?? null!;
+            return _taskFlowDbContext.MyTasks.Find(id) ?? null!;
         }
 
         public List<MyTask> GetAll()
         {
-            return _taskFlowDbContext.Tasks.ToList();
+            return _taskFlowDbContext.MyTasks.ToList();
         }
 
         public void Update(MyTask task)

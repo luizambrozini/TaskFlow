@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskFlow.Application.UseCases.Tasks.GetTask;
+using TaskFlow.Application.UseCases.Tasks.ListMyTasks;
+using TaskFlow.Comunication.Requests;
+using TaskFlow.Comunication.Responses;
 
 namespace TaskFlow.Api.Controllers
 {
@@ -7,9 +11,24 @@ namespace TaskFlow.Api.Controllers
     public class TaskController : ControllerBase
     {
         [HttpGet]
-        public IActionResult ListTasks()
+        [ProducesResponseType(typeof(ResponseListMyTasksJson), StatusCodes.Status200OK)]
+        public IActionResult ListTasks([FromServices] IListMyTasksUseCase listMyTasksUseCase)
         {
-            return Ok();
+            var tasks = listMyTasksUseCase.Execute();
+            return Ok(tasks);
+        }
+
+        [HttpGet("by-task-id/{taskId}")]
+        [ProducesResponseType(typeof(ResponseMyTaskJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+        public IActionResult GetMyTaskById
+        (
+            [FromServices] IGetMyTaskByIdUseCase getMyTaskByIdUseCase,
+            int taskId
+        )
+        {
+            var myTask = getMyTaskByIdUseCase.Execute(new RequestMyTaskByIdJson { TaskId = taskId });
+            return Ok(myTask);
         }
     }
 }
