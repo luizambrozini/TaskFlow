@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskFlow.Comunication\TaskFlow.Comunication.csproj" />
+    <ProjectReference Include="..\TaskFlow.Data\TaskFlow.Data.csproj" />
+  </ItemGroup>
+
 </Project>
