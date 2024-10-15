@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskFlow.Application.UseCases.Tasks.CreateTask;
 using TaskFlow.Application.UseCases.Tasks.GetTask;
 using TaskFlow.Application.UseCases.Tasks.ListMyTasks;
 using TaskFlow.Comunication.Requests;
@@ -29,6 +30,17 @@ namespace TaskFlow.Api.Controllers
         {
             var myTask = getMyTaskByIdUseCase.Execute(new RequestMyTaskByIdJson { TaskId = taskId });
             return Ok(myTask);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(ResponseCreateTaskJson), StatusCodes.Status200OK)]
+        public IActionResult CreateTask(
+            [FromServices] ICreateTaskUseCase createTaskUseCase,
+            [FromBody] RequestCreateTaskJson createTaskJson
+        )
+        {
+            var myTask = createTaskUseCase.Execute(createTaskJson);
+            return Created(string.Empty, myTask);
         }
     }
 }
