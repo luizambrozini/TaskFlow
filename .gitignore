@@ -361,3 +361,34 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore os arquivos de estado do Terraform
+*.tfstate
+*.tfstate.*
+
+# Ignore o arquivo de crash do Terraform
+crash.log
+
+# Ignore o plano gerado pelo Terraform
+*.tfplan
+
+# Ignore o diretório de bloqueio de execução do Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Ignore arquivos de variáveis sensíveis
+terraform.tfvars
+*.tfvars
+
+# Ignore os logs do Terraform
+*.log
+
+# Ignore qualquer credencial ou chave privada
+*.pem
+*.key
+
+# Ignore arquivos de backup que o Terraform gera
+*.backup
+
+# Ignore o arquivo de metadados da Azure CLI
+azureResourceGroup.*
