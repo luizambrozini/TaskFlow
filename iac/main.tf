@@ -1,92 +1,81 @@
-provider "azurerm" {
-  features {}
-}
-
-# Resource Group
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-free-tier-taskflow-db"
-  location = "East US"
-}
-
-# MySQL Server (Plano Gratuito)
-resource "azurerm_mysql_flexible_server" "mysql_server" {
-  name                = "taskflowmysql"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku_name            = "Standard_B1ms"
-  storage_mb          = 5120
-
-  administrator_login          = "taskflow"
-  administrator_login_password = "T4skflow2015@"
-  version                      = "8.0"
-
-  # Rede privada da Azure (Necessária para MySQL)
-  delegated_subnet_id = azurerm_subnet.my_subnet.id
-
-  # Configurações de rede pública
-  public_network_access_enabled = true
-
-  # Uso de zona de disponibilidade
-  availability_zone = "1"
-}
-
-# MySQL Database
-resource "azurerm_mysql_flexible_server_database" "mysql_db" {
-  name                = "taskflowdb"
-  resource_group_name = azurerm_resource_group.rg.name
-  server_name         = azurerm_mysql_flexible_server.mysql_server.name
-  collation           = "utf8mb4_general_ci"
-}
-
-# Subnet para o MySQL Server (necessário para MySQL no Flexible Server)
-resource "azurerm_virtual_network" "my_vnet" {
-  name                = "my-vnet"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-resource "azurerm_subnet" "my_subnet" {
-  name                 = "my-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.my_vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
-
-  delegation {
-    name = "delegation"
-    service_delegation {
-      name    = "Microsoft.DBforMySQL/flexibleServers"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "4.5.0"
     }
   }
 }
 
-# App Service Plan (Free Tier)
-resource "azurerm_app_service_plan" "asp" {
-  name                = "asp-taskflow-free"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+provider "azurerm" {
+  features {}
+  subscription_id = "b6636dea-0304-4d08-abb7-c30525fe92f0"
+}
+
+resource "azurerm_resource_group" "taskflow_rg" {
+  name     = "taskflow-rg"
+  location = var.location
+}
+
+/* resource "azurerm_app_service_plan" "taskflow_asp" {
+  name                = "taskflow-asp"
+  location            = azurerm_resource_group.taskflow_rg.location
+  resource_group_name = azurerm_resource_group.taskflow_rg.name
   sku {
     tier = "Free"
     size = "F1"
   }
 }
 
-# App Service for TaskFlow - Deploy from GitHub
-resource "azurerm_app_service" "app_service" {
-  name                = "taskflow-webapi-free"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_app_service_plan.asp.id
+resource "azurerm_app_service" "taskflow_api" {
+  name                = "taskflow-api"
+  location            = azurerm_resource_group.taskflow_rg.location
+  resource_group_name = azurerm_resource_group.taskflow_rg.name
+  app_service_plan_id = azurerm_app_service_plan.taskflow_asp.id
 
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
-    "MYSQL_CONNECTION_STRING"  = "Server=${azurerm_mysql_flexible_server.mysql_server.fully_qualified_domain_name};Database=${azurerm_mysql_flexible_server_database.mysql_db.name};User Id=taskflow;Password=T4skflow2015@;"
   }
 
   site_config {
-    scm_type                = "GitHub"
-    git_repository_url      = "https://github.com/luizambrozini/TaskFlow.git"
-    branch                  = "main"
+    scm_type = "LocalGit"
   }
 }
+
+resource "azurerm_mssql_server" "taskflow_sql" {
+  name                         = "taskflow-sqlserver"
+  resource_group_name          = azurerm_resource_group.taskflow_rg.name
+  location                     = azurerm_resource_group.taskflow_rg.location
+  version                      = "12.0"
+  administrator_login          = var.sql_admin_username
+  administrator_login_password = var.sql_admin_password
+}
+
+resource "azurerm_mssql_database" "taskflow_db" {
+  server_id = azurerm_mssql_server.taskflow_sql.id
+  name                = "taskflowdb"
+  sku_name            = "Basic"
+}
+
+resource "azurerm_storage_account" "taskflow_storage" {
+  name                     = "taskflowstorageacc"
+  resource_group_name      = azurerm_resource_group.taskflow_rg.name
+  location                 = azurerm_resource_group.taskflow_rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_blob" "taskflow_blob" {
+  name                   = "taskflowcode.zip"
+  storage_account_name   = azurerm_storage_account.taskflow_storage.name
+  storage_container_name = azurerm_storage_container.taskflow_container.name
+  type                   = "Block"
+  source                 = "https://github.com/luizambrozini/TaskFlow/archive/main.zip"
+}
+
+resource "azurerm_storage_container" "taskflow_container" {
+  name                  = "taskflowcontainer"
+  storage_account_name  = azurerm_storage_account.taskflow_storage.name
+  container_access_type = "private"
+}
+ */

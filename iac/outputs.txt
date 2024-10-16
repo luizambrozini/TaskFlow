@@ -1,0 +1,12 @@
+output "app_service_url" {
+  value = azurerm_app_service.taskflow_api.default_site_hostname
+  description = "URL of the deployed Web API"
+}
+
+output "sql_server_name" {
+  value = azurerm_mssql_server.taskflow_sql.name
+}
+
+output "sql_database_name" {
+  value = azurerm_mssql_database.taskflow_db.name
+}
